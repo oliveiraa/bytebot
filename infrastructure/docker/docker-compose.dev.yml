@@ -1,0 +1,23 @@
+# infrastructure/docker/docker-compose.dev.yml
+services:
+  bytebot-ui:
+    command: ["npm", "run", "dev"]               # hot-reload Next.js
+    environment:
+      - NODE_ENV=development 
+    volumes:
+      - ../../packages/bytebot-ui:/app/bytebot-ui
+      - ../../packages/shared:/app/shared
+      - ui_node_modules:/app/bytebot-ui/node_modules
+
+  bytebot-agent:
+    command: ["npm", "run", "start:dev"]         # NestJS watch mode
+    environment:
+      - NODE_ENV=development 
+    volumes:
+      - ../../packages/bytebot-agent:/app/bytebot-agent
+      - ../../packages/shared:/app/shared
+      - agent_node_modules:/app/bytebot-agent/node_modules
+
+volumes:
+  ui_node_modules:
+  agent_node_modules:

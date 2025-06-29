@@ -72,6 +72,28 @@ http://localhost:9992
 
 That's it! Start chatting with your AI desktop agent. Watch it work in real-time through the embedded desktop viewer.
 
+### Local Development (Hot-Reload)
+
+If you want to hack on the code you don't need to remember long `docker-compose` commands.  At the project root we ship a small helper:
+
+```bash
+chmod +x docker-helper.sh      # one-time setup
+./docker-helper.sh dev         # build + start dev stack with live reload
+```
+
+The script wraps the underlying compose files and timestamps the logs, saving them to `docker-logs-YYYYMMDD_HHMMSS.txt`.
+
+Other convenience commands:
+
+| Command | What it does |
+|---------|--------------|
+| `./docker-helper.sh build` | Build (or rebuild) all images for production |
+| `./docker-helper.sh start` | Start the production stack in the background |
+| `./docker-helper.sh stop`  | Stop & remove the containers |
+| `./docker-helper.sh logs`  | Follow logs from the running stack |
+
+Feel free to pass extra flags after the action, they'll be forwarded to `docker compose`.
+
 ### Example Tasks You Can Delegate
 
 - "Research the top 5 competitors for [product] and create a comparison spreadsheet"
