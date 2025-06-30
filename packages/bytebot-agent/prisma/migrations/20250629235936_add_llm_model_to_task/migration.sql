@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "LlmModel" AS ENUM ('CLAUDE_SONNET_4', 'CLAUDE_OPUS_4');
+
+-- AlterTable
+ALTER TABLE "Task" ADD COLUMN     "model" "LlmModel" NOT NULL DEFAULT 'CLAUDE_SONNET_4';

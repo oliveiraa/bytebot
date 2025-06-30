@@ -3,6 +3,7 @@ import { MessagesService } from '../messages/messages.service';
 import { Injectable, Logger } from '@nestjs/common';
 import { Role, TaskPriority, TaskStatus, TaskType } from '@prisma/client';
 import { AnthropicService } from '../anthropic/anthropic.service';
+import { OPUS_MODEL, SONNET_MODEL } from '../anthropic/anthropic.constants';
 import {
   isScrollToolUseBlock,
   isWaitToolUseBlock,
@@ -135,9 +136,15 @@ export class AgentProcessor {
         `Sending ${messages.length} messages to LLM for processing`,
       );
 
+      const modelId =
+        (task as any).model && (task as any).model === 'CLAUDE_OPUS_4'
+          ? OPUS_MODEL
+          : SONNET_MODEL;
+
       const messageContentBlocks: MessageContentBlock[] =
         await this.anthropicService.sendMessage(
           messages,
+          modelId,
           this.abortController.signal,
         );
 

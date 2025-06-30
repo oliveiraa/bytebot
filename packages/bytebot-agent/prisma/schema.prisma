@@ -40,6 +40,12 @@ enum TaskType {
   SCHEDULED
 }
 
+/// The language model that should be used for this task.
+enum LlmModel {
+  CLAUDE_SONNET_4 // new default (cheaper)
+  CLAUDE_OPUS_4
+}
+
 model Task {
   id            String        @id @default(uuid())
   description   String
@@ -60,6 +66,8 @@ model Task {
   summaries     Summary[]
   user          User?         @relation(fields: [userId], references: [id])
   userId        String?       // Optional foreign key to User for task ownership
+  /// Selected LLM for this task. Defaults to Claude Sonnet 4.
+  model         LlmModel      @default(CLAUDE_SONNET_4)
 }
 
 model Summary {

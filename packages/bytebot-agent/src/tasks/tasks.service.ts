@@ -50,6 +50,7 @@ export class TasksService {
           description: createTaskDto.description,
           type: createTaskDto.type || TaskType.IMMEDIATE,
           priority: createTaskDto.priority || TaskPriority.MEDIUM,
+          model: (createTaskDto.model as any) || 'CLAUDE_SONNET_4',
           status: TaskStatus.PENDING,
           createdBy: createTaskDto.createdBy || Role.USER,
           ...(createTaskDto.userId ? { userId: createTaskDto.userId } : {}),

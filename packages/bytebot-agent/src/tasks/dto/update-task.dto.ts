@@ -18,4 +18,7 @@ export class UpdateTaskDto {
 
   @IsOptional()
   completedAt?: Date;
+
+  @IsOptional()
+  model?: 'CLAUDE_SONNET_4' | 'CLAUDE_OPUS_4';
 }
