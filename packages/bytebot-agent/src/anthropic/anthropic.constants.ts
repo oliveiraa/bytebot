@@ -105,4 +105,8 @@ Remember: **accuracy over speed, clarity over cleverness**.
 Think before each move, keep the desktop clean when you're done, and **always** finish with \`set_task_status\`.
 `;
 
-export const DEFAULT_MODEL = 'claude-opus-4-20250514';
+export const SONNET_MODEL = 'claude-sonnet-4-20250514';
+
+export const DEFAULT_MODEL = SONNET_MODEL;
+
+export const OPUS_MODEL = 'claude-opus-4-20250514';

@@ -74,10 +74,10 @@ export async function fetchTaskById(taskId: string): Promise<Task | null> {
 /**
  * Sends a message to start a new task or continue an existing one
  * @param message The message content to send
+ * @param model The model to use for the task
  * @returns The task data or null if there was an error
  */
-
-export async function startTask(message: string): Promise<Task | null> {
+export async function startTask(message: string, model: 'sonnet-4' | 'opus-4' = 'sonnet-4'): Promise<Task | null> {
   try {
     const response = await fetch(
       `/api/tasks`,
@@ -86,7 +86,7 @@ export async function startTask(message: string): Promise<Task | null> {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ description: message }),
+        body: JSON.stringify({ description: message, model: model === 'sonnet-4' ? 'CLAUDE_SONNET_4' : 'CLAUDE_OPUS_4' }),
         credentials: 'include',
       },
     );

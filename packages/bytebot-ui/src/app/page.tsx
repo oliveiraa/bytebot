@@ -38,6 +38,7 @@ const StockPhoto: React.FC<StockPhotoProps> = ({
 export default function Home() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<'sonnet-4' | 'opus-4'>('sonnet-4');
   const router = useRouter();
   const [activePopoverIndex, setActivePopoverIndex] = useState<number | null>(
     null,
@@ -82,7 +83,7 @@ export default function Home() {
 
     try {
       // Send request to start a new task
-      const task = await startTask(input);
+      const task = await startTask(input, selectedModel);
 
       if (task && task.id) {
         // Redirect to the task page
@@ -235,11 +236,12 @@ export default function Home() {
                   minLines={3}
                 />
                 <div className="mt-2">
-                  <Select defaultValue="opus-4">
+                  <Select defaultValue={selectedModel} onValueChange={(val)=>setSelectedModel(val as any)}>
                     <SelectTrigger className="w-auto">
                       <SelectValue placeholder="Select a model" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="sonnet-4">Model: Sonnet 4 (default)</SelectItem>
                       <SelectItem value="opus-4">Model: Opus 4</SelectItem>
                     </SelectContent>
                   </Select>
@@ -285,11 +287,12 @@ export default function Home() {
                   minLines={3}
                 />
                 <div className="mt-2">
-                  <Select defaultValue="opus-4">
+                  <Select defaultValue={selectedModel} onValueChange={(val)=>setSelectedModel(val as any)}>
                     <SelectTrigger className="w-auto">
                       <SelectValue placeholder="Select a model" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="sonnet-4">Model: Sonnet 4 (default)</SelectItem>
                       <SelectItem value="opus-4">Model: Opus 4</SelectItem>
                     </SelectContent>
                   </Select>

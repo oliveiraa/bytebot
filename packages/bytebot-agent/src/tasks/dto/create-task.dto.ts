@@ -25,4 +25,8 @@ export class CreateTaskDto {
   @IsOptional()
   @IsString()
   userId?: string;
+
+  @IsOptional()
+  @IsString()
+  model?: 'CLAUDE_SONNET_4' | 'CLAUDE_OPUS_4';
 }

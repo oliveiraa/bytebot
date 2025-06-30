@@ -34,15 +34,17 @@ export class AnthropicService {
    * Sends a message to Anthropic Claude and returns the response
    *
    * @param messages Array of message content blocks representing the conversation
+   * @param modelOverride Optional model override
    * @param options Additional options for the API call
    * @returns The AI response as an array of message content blocks
    */
   async sendMessage(
     messages: Message[],
+    modelOverride?: string,
     signal?: AbortSignal,
   ): Promise<MessageContentBlock[]> {
     try {
-      const model = DEFAULT_MODEL;
+      const model = modelOverride || DEFAULT_MODEL;
       const maxTokens = 8192;
 
       // Convert our message content blocks to Anthropic's expected format
