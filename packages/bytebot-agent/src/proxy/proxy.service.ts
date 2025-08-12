@@ -55,6 +55,7 @@ export class ProxyService implements BytebotAgentService {
     model: string,
     useTools: boolean = true,
     signal?: AbortSignal,
+    options?: { toolChoice?: 'auto' | 'required' },
   ): Promise<BytebotAgentResponse> {
     // Convert messages to Chat Completion format
     const chatMessages = this.formatMessagesForChatCompletion(
@@ -69,6 +70,7 @@ export class ProxyService implements BytebotAgentService {
         max_tokens: 8192,
         ...(useTools && { tools: proxyTools }),
         reasoning_effort: 'high',
+        tool_choice: options?.toolChoice ?? 'auto',
       };
 
       // Make the API call

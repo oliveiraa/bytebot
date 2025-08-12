@@ -20,7 +20,8 @@ export function UserMessage({ group, messageIdToIndex }: UserMessageProps) {
         <div className="border-bytebot-bronze-light-7 flex items-start justify-start gap-2 border px-4 py-3 bg-bytebot-bronze-light-2 rounded-t-lg">
           <MessageAvatar role={group.role} />
 
-          <div>
+          {/* Constrain height of large prompts to avoid blocking the UI */}
+          <div className="max-h-48 overflow-y-auto pr-2">
             {group.messages.map((message) => (
               <div
                 key={message.id}
@@ -52,7 +53,7 @@ export function UserMessage({ group, messageIdToIndex }: UserMessageProps) {
                   }
                   return null;
                 })}
-                <div className="bg-bytebot-bronze-light-4 space-y-2 rounded-md px-2 py-1">
+                <div className="bg-bytebot-bronze-light-4 space-y-2 rounded-md px-2 py-1 break-words">
                   {message.content.map((block, index) => (
                     <div
                       key={index}

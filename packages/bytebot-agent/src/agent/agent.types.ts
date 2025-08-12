@@ -17,6 +17,9 @@ export interface BytebotAgentService {
     model: string,
     useTools: boolean,
     signal?: AbortSignal,
+    options?: {
+      toolChoice?: 'auto' | 'required';
+    },
   ): Promise<BytebotAgentResponse>;
 }
 

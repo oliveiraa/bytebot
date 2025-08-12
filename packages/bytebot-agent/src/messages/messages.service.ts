@@ -37,12 +37,20 @@ export class MessagesService {
     content: MessageContentBlock[];
     role: Role;
     taskId: string;
+    usage?: {
+      inputTokens?: number;
+      outputTokens?: number;
+      totalTokens?: number;
+      provider?: string;
+      model?: string;
+    };
   }): Promise<Message> {
     const message = await this.prisma.message.create({
       data: {
         content: data.content as Prisma.InputJsonValue,
         role: data.role,
         taskId: data.taskId,
+        ...(data.usage && { usage: data.usage as unknown as Prisma.InputJsonValue }),
       },
     });
 

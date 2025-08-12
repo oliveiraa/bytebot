@@ -146,6 +146,24 @@ export class TasksController {
     return messages;
   }
 
+  // Aggregate token usage for a task
+  @Get(':id/usage')
+  async getUsage(@Param('id') taskId: string): Promise<{ inputTokens: number; outputTokens: number; totalTokens: number; byMessage: Array<{ id: string; usage?: any }> }> {
+    const messages = await this.messagesService.findEvery(taskId);
+    const byMessage = messages.map((m) => ({ id: m.id, usage: (m as any).usage }));
+    const totals = byMessage.reduce(
+      (acc, m) => {
+        const u = (m.usage || {}) as { inputTokens?: number; outputTokens?: number; totalTokens?: number };
+        acc.inputTokens += u.inputTokens || 0;
+        acc.outputTokens += u.outputTokens || 0;
+        acc.totalTokens += u.totalTokens || 0;
+        return acc;
+      },
+      { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
+    );
+    return { ...totals, byMessage };
+  }
+
   @Post(':id/messages')
   @HttpCode(HttpStatus.CREATED)
   async addTaskMessage(

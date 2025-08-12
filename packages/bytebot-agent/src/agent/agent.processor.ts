@@ -168,6 +168,7 @@ export class AgentProcessor {
                 summaryId: null,
                 userId: null,
                 role: Role.USER,
+                usage: null,
                 content: [
                   {
                     type: MessageContentType.Text,
@@ -199,12 +200,25 @@ export class AgentProcessor {
         return;
       }
 
+      // Encourage a first screenshot or continued tool usage when needed
+      // If there are no prior assistant tool calls in unsummarized messages, prefer requiring a tool call
+      const hasRecentAssistantToolUse = messages.some((m) => {
+        if (m.role !== Role.ASSISTANT) return false;
+        const blocks = m.content as MessageContentBlock[];
+        return blocks?.some((b) => b.type === MessageContentType.ToolUse);
+      });
+
+      const toolChoice: 'auto' | 'required' = hasRecentAssistantToolUse
+        ? 'auto'
+        : 'required';
+
       agentResponse = await service.generateMessage(
         AGENT_SYSTEM_PROMPT,
         messages,
         model.name,
         true,
         this.abortController.signal,
+        { toolChoice },
       );
 
       const messageContentBlocks = agentResponse.contentBlocks;
@@ -229,6 +243,13 @@ export class AgentProcessor {
         content: messageContentBlocks,
         role: Role.ASSISTANT,
         taskId,
+        usage: {
+          inputTokens: agentResponse.tokenUsage.inputTokens,
+          outputTokens: agentResponse.tokenUsage.outputTokens,
+          totalTokens: agentResponse.tokenUsage.totalTokens,
+          provider: model.provider,
+          model: model.name,
+        },
       });
 
       // Calculate if we need to summarize based on token usage
@@ -252,6 +273,7 @@ export class AgentProcessor {
                 summaryId: null,
                 userId: null,
                 role: Role.USER,
+                usage: null,
                 content: [
                   {
                     type: MessageContentType.Text,

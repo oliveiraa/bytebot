@@ -5,6 +5,8 @@ import {
   isImageContentBlock,
   isComputerToolUseContentBlock,
   isToolResultContentBlock,
+  isThinkingContentBlock,
+  isRedactedThinkingContentBlock,
 } from "@bytebot/shared";
 import { TextContent } from "./TextContent";
 import { ImageContent } from "./ImageContent";
@@ -22,20 +24,14 @@ export function MessageContent({
 }: MessageContentProps) {
   // Filter content blocks and check if any visible content remains
   const visibleBlocks = content.filter((block) => {
-    // Filter logic from the original code
-    if (
-      isToolResultContentBlock(block) &&
-      block.content &&
-      block.content.some((contentBlock) => isImageContentBlock(contentBlock))
-    ) {
-      return true;
-    }
-    if (
-      isToolResultContentBlock(block) &&
-      block.tool_use_id !== "set_task_status" &&
-      !block.is_error
-    ) {
-      return false;
+    // Show tool results that contain images or text, or errors; hide truly empty tool results
+    if (isToolResultContentBlock(block)) {
+      if (block.is_error) return true;
+      if (!block.content || block.content.length === 0) return false;
+      return block.content.some(
+        (contentBlock) =>
+          isImageContentBlock(contentBlock) || isTextContentBlock(contentBlock),
+      );
     }
     return true;
   });
@@ -51,6 +47,28 @@ export function MessageContent({
         <div key={index}>
           {isTextContentBlock(block) && <TextContent block={block} />}
 
+          {isThinkingContentBlock(block) && (
+            <details className="mb-2">
+              <summary className="cursor-pointer text-xs text-bytebot-bronze-dark-9">
+                Reasoning
+              </summary>
+              <pre className="mt-1 whitespace-pre-wrap rounded border p-2 text-[11px] leading-snug">
+                {block.thinking}
+              </pre>
+            </details>
+          )}
+
+          {isRedactedThinkingContentBlock(block) && (
+            <details className="mb-2">
+              <summary className="cursor-pointer text-xs text-bytebot-bronze-dark-9">
+                Reasoning (redacted)
+              </summary>
+              <pre className="mt-1 whitespace-pre-wrap rounded border p-2 text-[11px] leading-snug">
+                {block.data}
+              </pre>
+            </details>
+          )}
+
           {isToolResultContentBlock(block) &&
             !block.is_error &&
             block.content.map((contentBlock, contentBlockIndex) => {
@@ -58,6 +76,9 @@ export function MessageContent({
                 return (
                   <ImageContent key={contentBlockIndex} block={contentBlock} />
                 );
+              }
+              if (isTextContentBlock(contentBlock)) {
+                return <TextContent key={contentBlockIndex} block={contentBlock} />;
               }
               return null;
             })}
@@ -69,13 +90,6 @@ export function MessageContent({
           {isToolResultContentBlock(block) && block.is_error && (
             <ErrorContent block={block} />
           )}
-
-          {isToolResultContentBlock(block) &&
-            !block.is_error &&
-            block.tool_use_id === "set_task_status" &&
-            block.content?.[0].type === "text" && (
-              <TextContent block={block.content?.[0]} />
-            )}
         </div>
       ))}
     </div>

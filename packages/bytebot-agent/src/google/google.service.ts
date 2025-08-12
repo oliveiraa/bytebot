@@ -50,6 +50,7 @@ export class GoogleService implements BytebotAgentService {
     model: string = DEFAULT_MODEL.name,
     useTools: boolean = true,
     signal?: AbortSignal,
+    _options?: { toolChoice?: 'auto' | 'required' },
   ): Promise<BytebotAgentResponse> {
     try {
       const maxTokens = 8192;

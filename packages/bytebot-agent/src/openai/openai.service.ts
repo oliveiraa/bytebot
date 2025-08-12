@@ -46,8 +46,10 @@ export class OpenAIService implements BytebotAgentService {
     model: string = DEFAULT_MODEL.name,
     useTools: boolean = true,
     signal?: AbortSignal,
+    options?: { toolChoice?: 'auto' | 'required' },
   ): Promise<BytebotAgentResponse> {
-    const isReasoning = model.startsWith('o');
+    // Treat GPT-5 family as reasoning-capable and also support OpenAI o-models
+    const isReasoning = model.startsWith('o') || model.startsWith('gpt-5');
     try {
       const openaiMessages = this.formatMessagesForOpenAI(messages);
 
@@ -59,7 +61,10 @@ export class OpenAIService implements BytebotAgentService {
           input: openaiMessages,
           instructions: systemPrompt,
           tools: useTools ? openaiTools : [],
-          reasoning: isReasoning ? { effort: 'medium' } : null,
+          // Keep defaults concise via prompt; SDK version in use doesn't expose text.verbosity
+          reasoning: isReasoning ? { effort: 'low' } : null,
+          // Prefer a tool call if requested by the agent loop
+          tool_choice: options?.toolChoice ?? 'auto',
           store: false,
           include: isReasoning ? ['reasoning.encrypted_content'] : [],
         },

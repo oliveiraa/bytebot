@@ -52,7 +52,7 @@ export function useChatSession({ initialTaskId }: UseChatSessionProps = {}) {
       const processedMessages = await fetchTaskProcessedMessages(
         currentTaskId,
         {
-          limit: 1000, // Get more messages for grouped view
+          limit: 10000, // Get more messages for grouped view
           page: 1,
         },
       );
@@ -183,7 +183,7 @@ export function useChatSession({ initialTaskId }: UseChatSessionProps = {}) {
           const processedMessages = await fetchTaskProcessedMessages(
             initialTaskId,
             {
-              limit: 1000, // Get more messages for grouped view
+              limit: 10000, // Get more messages for grouped view
               page: 1,
             },
           );
